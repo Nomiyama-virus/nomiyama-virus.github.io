@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野見山委員会</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- アニメーションの定義 --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heroFade {
+            0% { 
+                opacity: 0; 
+                transform: scale(1.1); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1); 
+            }
+        }
+
+        .fade-in {
+            opacity: 0; /* 最初は隠す */
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* --- セクションごとの遅延設定 --- */
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.5s; }
+        .delay-3 { animation-delay: 0.8s; }
+        .delay-img { animation-delay: 1.0s; }
+
+        /* --- ヒーロー・背景設定 --- */
+        #hero {
+            height: 80vh;
+            min-height: 500px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* スマホ・PC共通：実体としての背景レイヤー */
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                              url('https://image2url.com/r2/default/images/1775469069716-2ef47f5c-eefa-41e8-9088-1f0b88fb24e2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            opacity: 0;
+            animation: heroFade 1.5s ease-in-out 0.8s forwards;
+            will-change: opacity, transform;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+        }
+
+        header {
+            z-index: 100 !important;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .cyan-box {
+            width: 60px;
+            height: 5px;
+            background-color: #ff0000;
+            margin: 20px auto;
+        }
+
+        .concept-section {
+            padding: 100px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .concept-grid {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .concept-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .concept-text h2 {
+            font-size: 2.5rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+        }
+
+        .concept-text p {
+            line-height: 2;
+            color: #ccc;
+            font-size: 1.1rem;
+        }
+
+        .concept-image {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .concept-image img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(0, 255, 153, 0.2);
+        }
+
+        .cta-banner {
+            background-color: #1a1a1a;
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+
+        .cta-banner h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+            border-top: 1px solid #222;
+        }
+
+        /* --- 魔法のレスポンシブ --- */
+        @media screen and (max-width: 768px) {
+            header {
+                padding: 10px !important;
+                flex-direction: column !important;
+                height: auto !important;
+                gap: 10px !important;
+            }
+
+            nav ul {
+                justify-content: center !important;
+                gap: 15px !important;
+                padding: 0 !important;
+            }
+
+            nav a {
+                font-size: 14px !important;
+                padding-bottom: 5px !important;
+            }
+
+            .btn-booking {
+                width: 100% !important;
+                text-align: center !important;
+                box-sizing: border-box !important;
+            }
+
+            .car-card {
+                flex-direction: column !important;
+                width: 95% !important;
+                max-width: 400px !important;
+                height: auto !important;
+                margin: 10px auto !important;
+                padding: 15px !important;
+                align-items: center !important;
+            }
+
+            .car-image {
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 0 15px 0 !important;
+            }
+
+            .car-details {
+                width: 100% !important;
+                text-align: center !important;
+                align-items: center !important;
+            }
+
+            .car-name {
+                max-width: 100% !important;
+                white-space: normal !important;
+                font-size: 1.2rem !important;
+            }
+
+            .car-spec {
+                text-align: left !important;
+                font-size: 13px !important;
+                width: 100% !important;
+            }
+
+            .controls {
+                flex-direction: column !important;
+                gap: 10px !important;
+                margin: 10px !important;
+            }
+            
+            .controls-group {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+            }
+
+            #hero {
+                height: 70vh; 
+                min-height: 400px;
+            }
+            .hero-content h1 {
+                font-size: 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">野見山委員会</div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">ホーム</a></li>
+                <li><a href="shop.html">対策グッズ</a></li>
+                <li><a href="news.html">研究や発表</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-bg"></div>
+
+            <div class="hero-content fade-in delay-1">
+                <h1>悪臭退散<br>野見山委員会</h1>
+                <div class="cyan-box"></div>
+                <p style="margin-bottom: 30px; color: #aaa;>"授業後120分以内に風呂に入ることが確実だ。"</p>
+                <a href="cars.html" class="btn-main">対策グッズを見る</a>
+            </div>
+            <div class="scroll-down fade-in delay-1">▼</div>
+        </section>
+
+        <section class="concept-section">
+            <div class="concept-grid">
+                <div class="concept-text fade-in delay-2">
+                    <h2>インフル派型<br>毛穴感染ウイルス</h2>
+                    <p>
+                        感染経路など情報については、研究や発表タブをご覧下さい
+                    </p>
+                </div>
+        </section>
+
+        <section class="cta-banner fade-in delay-3">
+            <h2>INFORMATION</h2>
+            <p style="color: #888; margin-bottom: 30px;">研究や発表の情報</p>
+            <a href="news.html" class="btn-main" style="background: transparent; border: 1px solid #ff0000; color: #ff0000;">見る</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>🐷</p>
+    </footer>
+
+</body>
+</html>

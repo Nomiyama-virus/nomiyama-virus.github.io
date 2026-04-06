@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野見山委員会 研究や発表</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* レイアウト調整 */
+        #news-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            align-items: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .news-card {
+            width: 100%;
+            max-width: 800px;
+            background-color: #333;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 8px solid #ff0000; /* お知らせアクセント */
+            box-sizing: border-box;
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .news-title {
+            font-size: 1.4rem;
+            margin: 0;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .news-date {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .news-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #fff;
+            white-space: pre-wrap; /* 改行反映 */
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+/* --- 魔法のレスポンシブ・ポン付けコード --- */
+@media screen and (max-width: 768px) {
+    /* 1. ヘッダー：重なりを防ぐために縦に並べる */
+    header {
+        padding: 10px !important;
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 10px !important;
+    }
+
+    nav ul {
+        justify-content: center !important;
+        gap: 15px !important;
+        padding: 0 !important;
+    }
+
+    nav a {
+        font-size: 14px !important;
+        padding-bottom: 5px !important;
+    }
+
+    /* 予約ボタンをスマホで見やすく */
+    .btn-booking {
+        width: 100% !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. 車両一覧：カードを縦並びに強制変更 */
+    .car-card {
+        flex-direction: column !important; /* 横並びから縦並びへ */
+        width: 95% !important;
+        max-width: 400px !important;
+        height: auto !important;
+        margin: 10px auto !important;
+        padding: 15px !important;
+        align-items: center !important;
+    }
+
+    .car-image {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 0 15px 0 !important; /* 右余白を消して下に余白 */
+    }
+
+    .car-details {
+        width: 100% !important;
+        text-align: center !important;
+        align-items: center !important;
+    }
+
+    /* 文字のはみ出しを防止 */
+    .car-name {
+        max-width: 100% !important;
+        white-space: normal !important; /* 折り返しを許可 */
+        font-size: 1.2rem !important;
+    }
+
+    .car-spec {
+        text-align: left !important; /* スペックは左寄せが読みやすい */
+        font-size: 13px !important;
+        width: 100% !important;
+    }
+
+    /* 3. コントロールボタンの調整 */
+    .controls {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin: 10px !important;
+    }
+    
+    .controls-group {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+}
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">CRESTA-AUTO</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="shop.html">対策グッズ</a></li>
+                <li><a href="news.html" class="active">研究や発表</a></li>
+            </ul>
+        </nav>
+<a href="https://nomiyama-virus.github.io/nice.html" class="btn-booking">予約する</a>
+    </header>
+
+    <main>
+        <div id="news-list-container">
+            <p id="loading-message" class="loading-message">読み込み中です...</p>
+        </div>
+    </main>
+
+<script>
+    // デプロイしたGASのURL
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6uTp2TL7xhRgqWL99IdyEgeutGi-sCV57lP_dnKb6q6qR1TFdxGw/exec"; 
+
+    async function fetchNews() {
+        const container = document.getElementById('news-list-container');
+        try {
+            // ★ポイントみ：?action=getNews を付けて、GASの getNewsData() を呼び出す
+            const response = await fetch(`${GAS_API_URL}?action=getNews`);
+            const newsData = await response.json();
+            
+            if (!newsData || newsData.length === 0) {
+                container.innerHTML = '<p class="loading-message">現在お知らせはありません。</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            // ★ポイント：GASの getNewsData で定義されている英語のキー（date, title, content）を使う
+            newsData.forEach(item => {
+                const card = `
+                    <article class="news-card">
+                        <div class="news-header">
+                            <h2 class="news-title">${item.title || '無題のお知らせ'}</h2>
+                            <time class="news-date">${item.date || ''}</time>
+                        </div>
+                        <div class="news-content">${item.content || ''}</div>
+                    </article>
+                `;
+                container.innerHTML += card;
+            });
+
+        } catch (error) {
+            console.error("Fetch error:", error);
+            document.getElementById('loading-message').innerText = "お知らせの読み込みに失敗しました。";
+        }
+    }
+
+    fetchNews();
+</script>
+</body>
+</html>

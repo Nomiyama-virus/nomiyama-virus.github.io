@@ -1,0 +1,216 @@
+/* =========================================
+   Cresta Auto Dark Style
+   Base: Jimdo/Dark Theme
+   Theme Color: #00ff99 (Neo Green)
+   ========================================= */
+
+/* --- 全体の基本スタイル --- */
+body {
+    margin: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #121212; /* 全体的に黒背景 */
+    color: #eeeeee; /* ダークモード用の明るい文字色 */
+}
+
+/* =========================================
+   ヘッダー (Header)
+   ========================================= */
+header {
+    background-color: #1a1a1a; /* ヘッダーを少し明るい黒に */
+    padding: 10px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333; /* 境界線を暗く */
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff; /* ロゴは白 */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #cccccc; /* 通常時の文字色 */
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #ff0000; /* ホバーでアクセントカラーに */
+}
+
+nav a.active {
+    border-bottom: 2px solid #00ff99; /* アクティブ表示の下線をアクセントカラーに */
+    padding-bottom: 5px;
+    color: #ff0000;
+}
+
+.btn-booking {
+    background-color: transparent; /* 背景なし */
+    color: #ff0000; /* アクセントカラーの文字 */
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid #ff0000; /* 境界線をアクセントカラーに */
+    transition: 0.3s;
+    font-size: 0.85rem;
+}
+
+.btn-booking:hover {
+    background-color: #ff0000; /* ホバーで背景がアクセントカラーに */
+    color: #000000; /* ホバー時の文字色は黒 */
+}
+
+/* =========================================
+   ホーム (Hero Section)
+   ========================================= */
+#hero {
+    background-color: #000000; /* 真っ黒 */
+    color: #ffffff;
+    height: 80vh; /* 画像のように画面いっぱいに */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.cyan-box {
+    width: 50px;
+    height: 10px;
+    background-color: #ff0000; /* 水色ボックスをネオングリーンに */
+    margin: 0 auto 20px auto;
+}
+
+.btn-main {
+    background-color: #ff0000; /* メインボタンをネオングリーンに */
+    color: #000000; /* 文字は黒 */
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.btn-main:hover {
+    background-color: transparent;
+    color: #ff0000;
+    box-shadow: 0 0 10px #ff0000; /* 光るエフェクト */
+}
+
+.scroll-down {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    color: #ffffff;
+}
+
+/* =========================================
+   車両一覧 (Vehicle List Container)
+   ========================================= */
+#car-list-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.car-card {
+    background-color: #1e1e1e; /* カード背景を少し明るい黒に */
+    margin-bottom: 40px;
+    padding: 20px;
+    border-radius: 8px;
+    /* 影をダークモード用に暗く、広めに設定 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+    display: flex; /* 画像と文章を横並びに */
+    gap: 20px;
+}
+
+.car-image {
+    width: 400px;
+    height: auto;
+    border-radius: 4px;
+    object-fit: contain; /* 画像を押しつぶさずに収める */
+}
+
+.car-details {
+    flex: 1;
+    text-align: center; /* 文章は中央揃え */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.car-name {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #ffffff; /* 車名は白 */
+}
+
+.car-desc {
+    font-size: 1.1rem;
+    color: #cccccc; /* 説明文を少し薄く */
+    margin-bottom: 5px;
+}
+
+.car-spec {
+    font-size: 0.8rem;
+    color: #888888; /* スペックはさらに薄く */
+    margin-bottom: 20px;
+    white-space: pre-wrap; /* スペック */
+}
+
+.purchase-area {
+    margin-top: auto; /* 購入エリアを下部に固定 */
+}
+
+.car-status {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.status-sold {
+    color: #ff4444; /* 販売終了は赤（ダークモード用に見やすく調整） */
+}
+
+.status-onsale {
+    color: #ff0000; /* 販売中はネオングリーン */
+}
+
+.btn-buy { 
+    background-color: #00ff99; /* 購入ボタンをネオングリーンに */
+    color: #000000; /* 文字は黒 */
+    padding: 10px 30px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    border-radius: 4px; 
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.btn-buy:hover {
+    box-shadow: 0 0 15px #ff0000; /* 光るエフェクト */
+}
+
+.btn-buy.disabled {
+    background-color: #333333; /* 無効時は暗く */
+    color: #666666; /* 文字も暗く */
+    cursor: not-allowed;
+    pointer-events: none; /* クリック不可に */
+    box-shadow: none; /* ホバーエフェクトを消す */
+}

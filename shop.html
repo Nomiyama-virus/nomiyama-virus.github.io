@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野見山委員会 対策グッズ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+/* --- 全体設定 --- */
+body {
+    background-color: #121212; /* 黒背景 */
+    color: #eeeeee;
+    margin: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* --- ヘッダーの調整 --- */
+header {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    padding: 10px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+nav a {
+    color: #cccccc;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+    color: #ff0000;
+    border-bottom: 2px solid #ff0000;
+}
+
+.btn-booking {
+    background-color: transparent;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.btn-booking:hover {
+    background-color: #ff0000;
+    color: #000;
+}
+
+/* --- 絞り込み・並べ替えエリア --- */
+.controls {
+    background-color: #1e1e1e;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 960px;
+    border-radius: 8px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #333;
+}
+
+.controls label {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.controls button {
+    padding: 8px 16px;
+    border: 1px solid #444;
+    background: #252525;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.controls button:hover {
+    border-color: #ff0000;
+    color: #ff0000;
+}
+
+.controls button.active {
+    background: #ff0000;
+    color: #000;
+    border-color: #ff0000;
+    font-weight: bold;
+}
+
+/* --- 車両リスト・カード --- */
+#car-list-container {
+    display: flex;
+    flex-direction: column; /* 横並びではなく縦に並べる（Jimdo/公式風） */
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+.car-card {
+    width: 100%;
+    max-width: 800px; /* カードの最大幅 */
+    background-color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff0000;
+}
+
+.car-image {
+    width: 320px; /* 画像サイズ固定 */
+    height: 180px;
+    object-fit: contain;
+    background-color: #000;
+    border: 1px solid #444;
+    border-radius: 4px;
+    margin-right: 30px;
+}
+
+.car-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.car-name {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 400px;
+}
+
+.car-price {
+    font-size: 1.2rem;
+    color: #ff0000; /* 価格をネオングリーンに */
+    margin-bottom: 5px;
+}
+
+.currency-label {
+    font-size: 0.9rem;
+    margin-left: 5px;
+    color: #ff0000;
+}
+
+.car-spec {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.car-status {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.status-onsale {
+    color: #ff0000;
+}
+
+.status-sold {
+    color: #ff4444;
+}
+
+.btn-buy {
+    background-color: #ff0000;
+    color: #000;
+    padding: 10px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.btn-buy:hover {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px #ff0000;
+}
+
+.btn-buy.disabled {
+    background-color: #333;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- 魔法のレスポンシブ・ポン付けコード --- */
+@media screen and (max-width: 768px) {
+    /* 1. ヘッダー：重なりを防ぐために縦に並べる */
+    header {
+        padding: 10px !important;
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 10px !important;
+    }
+
+    nav ul {
+        justify-content: center !important;
+        gap: 15px !important;
+        padding: 0 !important;
+    }
+
+    nav a {
+        font-size: 14px !important;
+        padding-bottom: 5px !important;
+    }
+
+    /* 予約ボタンをスマホで見やすく */
+    .btn-booking {
+        width: 100% !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. 車両一覧：カードを縦並びに強制変更 */
+    .car-card {
+        flex-direction: column !important; /* 横並びから縦並びへ */
+        width: 95% !important;
+        max-width: 400px !important;
+        height: auto !important;
+        margin: 10px auto !important;
+        padding: 15px !important;
+        align-items: center !important;
+    }
+
+    .car-image {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 0 15px 0 !important; /* 右余白を消して下に余白 */
+    }
+
+    .car-details {
+        width: 100% !important;
+        text-align: center !important;
+        align-items: center !important;
+    }
+
+    /* 文字のはみ出しを防止 */
+    .car-name {
+        max-width: 100% !important;
+        white-space: normal !important; /* 折り返しを許可 */
+        font-size: 1.2rem !important;
+    }
+
+    .car-spec {
+        text-align: left !important; /* スペックは左寄せが読みやすい */
+        font-size: 13px !important;
+        width: 100% !important;
+    }
+
+    /* 3. コントロールボタンの調整 */
+    .controls {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin: 10px !important;
+    }
+    
+    .controls-group {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+}
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">CRESTA-AUTO</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="shop.html" class="active">対策グッズ</a></li>
+                <li><a href="news.html">研究や発表</a></li>
+          </ul>
+        </nav>
+<a href="https://nomiyama-virus.github.io/nice.html" class="btn-booking">予約する</a>
+    </header>
+
+    <main>
+        <div class="controls">
+            <div class="controls-group">
+                <label>絞り込み:</label>
+                <button id="filter-all" onclick="updateFilter('all')">すべて</button>
+                <button id="filter-onsale" class="active" onclick="updateFilter('onsale')">販売中のみ</button>
+            </div>
+            <div class="controls-group">
+                <label>並べ替え:</label>
+                <button id="sort-new" class="active" onclick="updateSort('new')">新しい順</button>
+                <button id="sort-old" onclick="updateSort('old')">古い順</button>
+                <button id="sort-high" onclick="updateSort('high')">価格が高い順</button>
+                <button id="sort-low" onclick="updateSort('low')">価格が低い順</button>
+            </div>
+        </div>
+
+        <div id="car-list-container">
+            <p id="loading-message">データを読み込み中です...</p>
+        </div>
+    </main>
+
+    <script>
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6uTp2TL7xhRgqWL99IdyEgeutGi-sCV57lP_dnKb6q6qR1TFdxGw/exec"; 
+        
+        let allCars = [];
+        let currentSort = 'new';
+        let currentFilter = 'onsale';
+
+        async function fetchCars() {
+            try {
+                const response = await fetch(GAS_API_URL);
+                const cars = await response.json();
+                
+                // データを加工して保存
+                allCars = cars.map((car, index) => ({
+                    ...car,
+                    index: index, // 元の並び順を保存
+                    numericPrice: parseInt(String(car.価格).replace(/[^0-9]/g, '')) || 0 // 価格を数値化
+                }));
+
+                displayContent();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loading-message').innerText = "データの読み込みに失敗しました。";
+            }
+        }
+
+        // 画像URLをどんな形式でも表示可能なものに変換する工夫
+        function getSafeImageUrl(url) {
+            if (!url) return "https://placehold.jp/24/cccccc/ffffff/400x250.png?text=No%20Image";
+            
+            // GoogleドライブのIDを抽出
+            const driveIdMatch = url.match(/[-\w]{25,}/);
+            if (driveIdMatch) {
+                // プレビュー画面ではなく、直接画像データを取得するURLに強制変換
+                return `https://lh3.googleusercontent.com/d/${driveIdMatch[0]}`;
+            }
+            return url; // ドライブ以外ならそのまま
+        }
+
+        function updateSort(type) {
+            currentSort = type;
+            displayContent();
+        }
+
+        function updateFilter(type) {
+            currentFilter = type;
+            displayContent();
+        }
+
+        function displayContent() {
+            const container = document.getElementById('car-list-container');
+            container.innerHTML = '';
+
+            // ボタンの状態を更新
+            document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+            document.getElementById(`sort-${currentSort}`).classList.add('active');
+            document.getElementById(`filter-${currentFilter}`).classList.add('active');
+
+            let cars = [...allCars];
+
+            // 1. 絞り込み
+            if (currentFilter === 'onsale') {
+                cars = cars.filter(c => c.販売状況 === '販売中');
+            }
+
+            // 2. 並べ替え
+            if (currentSort === 'new') cars.sort((a, b) => b.index - a.index);
+            if (currentSort === 'old') cars.sort((a, b) => a.index - b.index);
+            if (currentSort === 'high') cars.sort((a, b) => b.numericPrice - a.numericPrice);
+            if (currentSort === 'low') cars.sort((a, b) => a.numericPrice - b.numericPrice);
+
+            // 3. 描画
+            cars.forEach(car => {
+                const safeImg = getSafeImageUrl(car.画像URL || car.画像ID);
+                const isSold = car.販売状況 === '販売終了';
+                
+                const card = `
+                    <div class="car-card" style="${isSold ? 'opacity: 0.7; filter: grayscale(0.5);' : ''}">
+                        <img src="${safeImg}" alt="${car.車名}" class="car-image" onerror="this.src='https://placehold.jp/24/cccccc/ffffff/400x250.png?text=Image%20Error'">
+                        <div class="car-details">
+                            <h2 class="car-name">${car.車名}</h2>
+                            <p class="car-price">価格: ${car.価格}<span class="currency-label">ノミドル</span></p>
+                            <p class="car-spec">${car.備考 === 'あ' ? '' : car.備考}</p>
+                            <div class="purchase-area">
+                                <span class="car-status ${isSold ? 'status-sold' : 'status-onsale'}">
+                                    【${car.販売状況}】
+                                </span><br>
+                                ${isSold ? 
+                                    '<span class="btn-buy disabled">購入不可</span>' : 
+                                    `<a href="${car.購入リンク}" class="btn-buy" target="_blank">買う</a>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        fetchCars();
+    </script>
+     
+</body>
+</html>
