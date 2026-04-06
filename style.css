@@ -193,7 +193,7 @@ nav a.active {
 }
 
 .btn-buy { 
-    background-color: #00ff99; /* 購入ボタンをネオングリーンに */
+    background-color: #ff0000; /* 購入ボタンをネオングリーンに */
     color: #000000; /* 文字は黒 */
     padding: 10px 30px; 
     text-decoration: none; 
