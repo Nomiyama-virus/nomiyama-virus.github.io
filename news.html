@@ -17,6 +17,34 @@
             margin: 0 auto;
         }
 
+        /* 並び替えボタンのスタイル */
+        .sort-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn-sort {
+            background-color: #444;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-sort:hover {
+            background-color: #555;
+        }
+
+        .btn-sort.active {
+            background-color: #ff0000;
+            border-color: #ff0000;
+        }
+
         .news-card {
             width: 100%;
             max-width: 800px;
@@ -155,48 +183,74 @@
 <a href="https://nomiyama-virus.github.io/nice.html" class="btn-booking">予約する</a>
     </header>
 
-    <main>
+<main>
+        <div class="sort-controls">
+            <button class="btn-sort active" onclick="sortNews('new')">新しい順</button>
+            <button class="btn-sort" onclick="sortNews('old')">古い順</button>
+        </div>
+
         <div id="news-list-container">
             <p id="loading-message" class="loading-message">読み込み中です...</p>
         </div>
     </main>
 
 <script>
-    // デプロイしたGASのURL
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6uTp2TL7xhRgqWL99IdyEgeutGi-sCV57lP_dnKb6q6qR1TFdxGw/exec"; 
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6uTp2TL7xhRgqWL99IdyEgeutGi-sCV57lP_dnKb6q6qR1TFdxGw/exec"; 
+    let currentNewsData = []; // データを保持する変数
 
     async function fetchNews() {
         const container = document.getElementById('news-list-container');
         try {
-            // ★ポイントみ：?action=getNews を付けて、GASの getNewsData() を呼び出す
             const response = await fetch(`${GAS_API_URL}?action=getNews`);
-            const newsData = await response.json();
+            currentNewsData = await response.json();
             
-            if (!newsData || newsData.length === 0) {
+            if (!currentNewsData || currentNewsData.length === 0) {
                 container.innerHTML = '<p class="loading-message">現在お知らせはありません。</p>';
                 return;
             }
 
-            container.innerHTML = '';
-
-            // ★ポイント：GASの getNewsData で定義されている英語のキー（date, title, content）を使う
-            newsData.forEach(item => {
-                const card = `
-                    <article class="news-card">
-                        <div class="news-header">
-                            <h2 class="news-title">${item.title || '無題のお知らせ'}</h2>
-                            <time class="news-date">${item.date || ''}</time>
-                        </div>
-                        <div class="news-content">${item.content || ''}</div>
-                    </article>
-                `;
-                container.innerHTML += card;
-            });
+            // 初期表示（新しい順）
+            renderNews(currentNewsData);
 
         } catch (error) {
             console.error("Fetch error:", error);
             document.getElementById('loading-message').innerText = "お知らせの読み込みに失敗しました。";
         }
+    }
+
+    // 描画処理を分離
+    function renderNews(data) {
+        const container = document.getElementById('news-list-container');
+        container.innerHTML = '';
+        data.forEach(item => {
+            const card = `
+                <article class="news-card">
+                    <div class="news-header">
+                        <h2 class="news-title">${item.title || '無題のお知らせ'}</h2>
+                        <time class="news-date">${item.date || ''}</time>
+                    </div>
+                    <div class="news-content">${item.content || ''}</div>
+                </article>
+            `;
+            container.innerHTML += card;
+        });
+    }
+
+    // ソート機能
+    function sortNews(order) {
+        // ボタンの見た目切り替え
+        const buttons = document.querySelectorAll('.btn-sort');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // データの並び替え（日付文字列で比較）
+        const sortedData = [...currentNewsData].sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return order === 'new' ? dateB - dateA : dateA - dateB;
+        });
+
+        renderNews(sortedData);
     }
 
     fetchNews();
