@@ -185,8 +185,8 @@
 
 <main>
         <div class="sort-controls">
-            <button class="btn-sort active" onclick="sortNews('new', event)">新しい順</button>
-            <button class="btn-sort" onclick="sortNews('old', event)">古い順</button>
+            <button class="btn-sort active" onclick="sortNews('new', this)">新しい順</button>
+            <button class="btn-sort" onclick="sortNews('old', this)">古い順</button>
         </div>
 
         <div id="news-list-container">
@@ -202,16 +202,27 @@ const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6u
         const container = document.getElementById('news-list-container');
         try {
             const response = await fetch(`${GAS_API_URL}?action=getNews`);
-            currentNewsData = await response.json();
+            const data = await response.json();
+            
+            // 取得したデータに元の順序(index)を付与して保存
+            currentNewsData = data.map((item, index) => ({
+                ...item,
+                index: index
+            }));
             
             if (!currentNewsData || currentNewsData.length === 0) {
                 container.innerHTML = '<p class="loading-message">現在お知らせはありません。</p>';
                 return;
             }
 
-            // 初期表示を新しい順にソートしてから描画
-            const initialSortedData = [...currentNewsData].sort((a, b) => new Date(b.date) - new Date(a.date));
-            renderNews(initialSortedData);
+            // 初期表示（新しい順：日付またはindexで降順）
+            const sorted = [...currentNewsData].sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return dateB - dateA || b.index - a.index;
+            });
+
+            renderNews(sorted);
 
         } catch (error) {
             console.error("Fetch error:", error);
@@ -219,7 +230,7 @@ const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6u
         }
     }
 
-    // 描画処理を分離
+    // 描画処理
     function renderNews(data) {
         const container = document.getElementById('news-list-container');
         container.innerHTML = '';
@@ -237,18 +248,25 @@ const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6u
         });
     }
 
-    // ソート機能
-    function sortNews(order, event) {
+    // ソート機能（引数にelementを追加して確実な挙動に）
+    function sortNews(order, element) {
+        if (!currentNewsData || currentNewsData.length === 0) return;
+
         // ボタンの見た目切り替え
         const buttons = document.querySelectorAll('.btn-sort');
         buttons.forEach(btn => btn.classList.remove('active'));
-        if(event) event.target.classList.add('active');
+        element.classList.add('active');
 
-        // データの並び替え（日付文字列で比較）
+        // データの並び替え（日付優先、日付が同じなら元のindexで比較）
         const sortedData = [...currentNewsData].sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return order === 'new' ? dateB - dateA : dateA - dateB;
+            const dateA = new Date(a.date || 0);
+            const dateB = new Date(b.date || 0);
+
+            if (order === 'new') {
+                return dateB - dateA || b.index - a.index;
+            } else {
+                return dateA - dateB || a.index - b.index;
+            }
         });
 
         renderNews(sortedData);
