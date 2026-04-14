@@ -185,8 +185,8 @@
 
 <main>
         <div class="sort-controls">
-            <button class="btn-sort active" onclick="sortNews('new')">新しい順</button>
-            <button class="btn-sort" onclick="sortNews('old')">古い順</button>
+            <button class="btn-sort active" onclick="sortNews('new', event)">新しい順</button>
+            <button class="btn-sort" onclick="sortNews('old', event)">古い順</button>
         </div>
 
         <div id="news-list-container">
@@ -209,8 +209,9 @@ const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6u
                 return;
             }
 
-            // 初期表示（新しい順）
-            renderNews(currentNewsData);
+            // 初期表示を新しい順にソートしてから描画
+            const initialSortedData = [...currentNewsData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderNews(initialSortedData);
 
         } catch (error) {
             console.error("Fetch error:", error);
@@ -237,11 +238,11 @@ const GAS_API_URL = "https://script.google.com/macros/s/AKfycbweQRNKjXqpmGfb-E6u
     }
 
     // ソート機能
-    function sortNews(order) {
+    function sortNews(order, event) {
         // ボタンの見た目切り替え
         const buttons = document.querySelectorAll('.btn-sort');
         buttons.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+        if(event) event.target.classList.add('active');
 
         // データの並び替え（日付文字列で比較）
         const sortedData = [...currentNewsData].sort((a, b) => {
